@@ -66,25 +66,6 @@ fn main() {
     }
 }
 
-// struct bot_command {
-//     function: fn(Message, Context);
-//     name: str;
-// }
-//
-// let ping = bot_command{
-//     function = |msg:Message, ctx:Context|{
-//         if let Err(why) = msg.channel_id.say("Pong!") {
-//             println!("Error sending message: {:?}", why);
-//         };
-//     name = "ping"
-//     }
-// }
-//
-//
-//
-// fn process_command(ctx, msg){
-//
-// }
 
 fn is_command(message:&String, command_name:&str) -> bool{
     // println!("{}",message.trim());
