@@ -1,0 +1,23 @@
+[package]
+name = "tioft_rust_discord_1"
+version = "0.1.0"
+authors = ["illemonati"]
+
+[dependencies]
+# serenity = "0.5"
+
+[dependencies.serenity]
+git = "https://github.com/illemonati/serenity"
+default-features = false
+features = [
+    "builder",
+    "client",
+    "framework",
+    "gateway",
+    "http",
+    "model",
+    "standard_framework",
+    "utils",
+    "cache",
+]
+version = "0.5"
