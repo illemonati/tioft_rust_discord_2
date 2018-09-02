@@ -25,12 +25,20 @@ impl EventHandler for Handler {
            }
        }
 
+       if is_command(&msg.content, "say"){
+           let message : Vec<&str>= msg.content.trim().split_whitespace().collect();
+           let message : String = String::from(message[1..][0]);
+           match msg.channel_id.say(message){
+               Ok(_) => {},
+               Err(e) => {println!("Error: {}", e)},
+           }
+       }
+
        if is_command(&msg.content, "ping"){
            match msg.channel_id.say("Pong"){
                Ok(_) => {},
                Err(e) => {println!("Error: {}", e)},
            }
-
        }
 
        if is_command(&msg.content, "communism"){
@@ -65,5 +73,11 @@ fn main() {
 
 
 fn is_command(message:&String, command_name:&str) -> bool{
-    message.trim() == String::from(PREFIX) + command_name
+    // message.trim() == String::from(PREFIX) + command_name
+    let message : Vec<&str>= message.trim().split_whitespace().collect();
+    // match ([&message[0], message[1]].join(" ") == String::from(PREFIX) + command_name){
+    match (message[0] == String::from(PREFIX) + command_name){
+        b => b,
+        _ => false,
+    }
 }
