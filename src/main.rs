@@ -27,7 +27,7 @@ impl EventHandler for Handler {
 
        if is_command(&msg.content, "say"){
            let message : Vec<&str>= msg.content.trim().split_whitespace().collect();
-           let message : String = String::from(message[1..][0]);
+           let message : String = String::from(message[1..].join(" "));
            match msg.channel_id.say(message){
                Ok(_) => {},
                Err(e) => {println!("Error: {}", e)},
