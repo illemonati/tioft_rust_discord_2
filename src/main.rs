@@ -16,16 +16,16 @@ impl EventHandler for Handler {
     fn message(&self, ctx: Context, msg: Message) {
 
     let RED:Colour = Colour::from_rgb(204,0,0);
-       // if msg.content == "!ping" {
-       //      println!("Shard {}", ctx.shard_id);
-       //
-       //      if let Err(why) = msg.channel_id.say("Pong!") {
-       //          println!("Error sending message: {:?}", why);
-       //      }
-       //  }
+
+
+       if (&msg).content.trim().to_lowercase().contains("alex"){
+           match msg.channel_id.say("He be tard. --Jon Skeet") {
+                Ok(_) => {},
+                Err(e) => {println!("Error: {}", e)},
+           }
+       }
+
        if is_command(&msg.content, "ping"){
-           // println!("ran");
-           // msg.reply("Pong!");
            match msg.channel_id.say("Pong"){
                Ok(_) => {},
                Err(e) => {println!("Error: {}", e)},
@@ -47,7 +47,6 @@ impl EventHandler for Handler {
                 Err(e) => {println!("Error: {}", e)},
             }
        }
-
     }
 
     fn ready(&self, _: Context, ready: Ready) {
@@ -55,21 +54,16 @@ impl EventHandler for Handler {
     }
 }
 
-
 fn main() {
-    // Configure the client with your Discord bot token in the environment.
     let token = env::var("DISCORD_TOKEN")
         .expect("Expected a token in the environment");
     let mut client = Client::new(&token, Handler).expect("Err creating client");
-    if let Err(why) = client.start_shards(2) {
+    if let Err(why) = client.start_shards(1) {
         println!("Client error: {:?}", why);
     }
 }
 
 
 fn is_command(message:&String, command_name:&str) -> bool{
-    // println!("{}",message.trim());
-    // println!("{}",String::from(PREFIX) + command_name);
-    // println!("{}", message.trim() == String::from(PREFIX) + command_name);
     message.trim() == String::from(PREFIX) + command_name
 }

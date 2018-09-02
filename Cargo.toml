@@ -12,11 +12,11 @@ default-features = false
 features = [
     "builder",
     "client",
-    "framework",
+    # "framework",
     "gateway",
     "http",
     "model",
-    "standard_framework",
+    # "standard_framework",
     "utils",
     "cache",
 ]
