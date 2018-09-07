@@ -19,6 +19,6 @@ features = [
     # "standard_framework",
     "utils",
     "cache",
-    "voice",
+    # "voice",
 ]
 version = "0.5"
