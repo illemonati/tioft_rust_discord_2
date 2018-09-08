@@ -8,10 +8,13 @@ use serenity::utils::MessageBuilder;
 use serenity::model::channel::Embed;
 use serenity::utils::Colour;
 use serenity::model::channel::EmbedImage;
+use std::fs::File;
+use std::time::Instant;
 
 
 const PREFIX : &str =  "@@";
 struct Handler;
+
 
 
 impl EventHandler for Handler {
@@ -61,24 +64,25 @@ impl EventHandler for Handler {
 
             fn print_msg(msg:& Message) {
                 println!("-------------------------------------------------------------------------");
-                println!("id: {:?}\n",(&msg).id);
-                println!("content: {:?}\n",(&msg).content);
+                println!("id: {}\n",(&msg).id);
+                println!("content: {}\n",(&msg).content);
+                println!("content_debug: {:?}\n",(&msg).content);
                 println!("embeds: {:?}\n",(&msg).embeds);
                 println!("attachments: {:?}\n",(&msg).attachments);
-                println!("author: {:?}\n",(&msg).author);
+                println!("author: {}\n",(&msg).author);
                 // println!("{:?}",(&msg).bot);
                 // println!("{:?}",(&msg).name);
                 // println!("{:?}",(&msg).discriminator);
-                println!("channel_id: {:?}\n",(&msg).channel_id);
+                println!("channel_id: {}\n",(&msg).channel_id);
                 println!("guild_id: {:?}\n",(&msg).guild_id);
                 println!("kind: {:?}\n",(&msg).kind);
                 // println!("{:?}",(&msg).memeber);
-                println!("mention_everyone: {:?}\n",(&msg).mention_everyone);
+                println!("mention_everyone: {}\n",(&msg).mention_everyone);
                 println!("mention_roles: {:?}\n",(&msg).mention_roles);
                 println!("mentions: {:?}\n",(&msg).mentions);
-                println!("tts: {:?}\n",(&msg).tts);
+                println!("tts: {}\n",(&msg).tts);
                 println!("webhook_id: {:?}\n",(&msg).webhook_id);
-                println!("timestamp: {:?}\n",(&msg).timestamp);
+                println!("timestamp: {}\n",(&msg).timestamp);
                 println!("-------------------------------------------------------------------------");
                 print!("\n\n\n");
             }
@@ -98,6 +102,7 @@ fn main() {
     if let Err(why) = client.start_shards(1) {
         println!("Client error: {:?}", why);
     }
+    let now = Instant::now();
 }
 
 
