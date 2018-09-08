@@ -70,6 +70,7 @@ impl EventHandler for Handler {
                 println!("embeds: {:?}\n",(&msg).embeds);
                 println!("attachments: {:?}\n",(&msg).attachments);
                 println!("author: {}\n",(&msg).author);
+                println!("author_debug: {:?}\n",(&msg).author);
                 // println!("{:?}",(&msg).bot);
                 // println!("{:?}",(&msg).name);
                 // println!("{:?}",(&msg).discriminator);
