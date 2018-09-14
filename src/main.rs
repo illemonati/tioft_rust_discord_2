@@ -59,6 +59,16 @@ fn main() {
                 return is_result;
             }
 
+            if (&msg).content.trim().to_lowercase().contains("beter"){
+                let img = "https://i.kym-cdn.com/photos/images/newsfeed/001/233/110/001.png";
+                match msg.channel_id.send_message(|m|m.embed(|e| e
+                    .title("BEater")
+                    .image(&img))) {
+                     Ok(_) => {},
+                     Err(e) => {eprintln!("Error: {}", e);},
+                }
+            }
+
             if (&msg).content.trim().to_lowercase().contains("alex"){
                match msg.channel_id.say("He be tard. --Jon Skeet") {
                     Ok(_) => {},
@@ -68,7 +78,10 @@ fn main() {
 
 
             if is_person(&msg, "tong", 313687614853218306u64){
-               let _ = msg.channel_id.send_files(files, |m| m.content(""));
+               match msg.channel_id.send_files(files, |m| m.content("")) {
+                    Ok(_) => {},
+                    Err(e) => {eprintln!("Error: {}", e);},
+               }
             }
 
 
