@@ -1,3 +1,4 @@
+
 extern crate serenity;
 extern crate find_folder;
 
@@ -56,6 +57,16 @@ impl EventHandler for Handler {
                  Ok(_) => {},
                  Err(e) => {eprintln!("Error: {}", e);},
             }
+        }
+
+        if is_command(&msg.content, "alex"){
+            let img = "https://i.imgur.com/uzEivpm.png";
+            match msg.channel_id.send_message(|m|m.embed(|e| e
+                .title("BEater")
+                .image(&img))) {
+                 Ok(_) => {},
+                 Err(e) => {eprintln!("Error: {}", e);}
+             }
         }
 
         if (&msg).content.trim().to_lowercase().contains("alex"){
