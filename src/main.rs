@@ -11,6 +11,7 @@ use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 use serenity::utils::Colour;
 use serenity::utils::MessageBuilder;
+// use serenity::http::raw::broadcast_typing;
 use std::env;
 use std::fs::File;
 use std::time::Instant;
@@ -35,7 +36,6 @@ impl EventHandler for Handler {
         let RED: Colour = Colour::from_rgb(204, 0, 0);
 
         // println!("{:?}\n\n\n",&msg );
-
         fn is_person(msg: &Message, name: &str, id: u64) -> bool {
             let mut is_result = false;
             if msg.content.trim().to_lowercase().contains(name) {
@@ -50,6 +50,8 @@ impl EventHandler for Handler {
 
             return is_result;
         }
+
+        (&msg).channel_id.broadcast_typing();
 
         if is_command(&msg.content, "dance_char") {
             let msg_char: Vec<&str> = msg.content.trim().split_whitespace().collect();
