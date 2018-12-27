@@ -193,8 +193,8 @@ impl EventHandler for Handler {
 }
 
 fn main() {
-    // let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
-    let token = "123";
+    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    // let token = "123";
     let now = Instant::now();
 
     let mut client = Client::new(&token, Handler).expect("Err creating client");
