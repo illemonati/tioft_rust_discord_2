@@ -102,6 +102,18 @@ impl EventHandler for Handler {
             }
         }
 
+        if ((&msg).content.trim().to_lowercase().contains("homo")) || (&msg).content.trim().to_lowercase().contains("gay") {
+            let img = "https://i.imgur.com/U9UbZJI.png";
+            match msg
+                .channel_id
+                .send_message(|m| m.embed(|e| e.title("HOMO").image(&img))){
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Error: {}", e);
+                    }
+                }
+        }
+
         if is_person(&msg, "tong", 313687614853218306u64) {
             match msg.channel_id.send_files(files, |m| m.content("")) {
                 Ok(_) => {}
@@ -181,7 +193,8 @@ impl EventHandler for Handler {
 }
 
 fn main() {
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    // let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    let token = "123";
     let now = Instant::now();
 
     let mut client = Client::new(&token, Handler).expect("Err creating client");

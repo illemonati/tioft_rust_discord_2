@@ -11,15 +11,15 @@ find_folder="0.3"
 git = "https://github.com/illemonati/serenity"
 default-features = false
 features = [
-    "builder",
+    # "builder",
     "client",
     # "framework",
-    "gateway",
-    "http",
+    # "gateway",
+    # "http",
     "model",
     # "standard_framework",
-    "utils",
-    "cache",
+    # "utils",
+    # "cache",
     # "voice",
 ]
 version = "0.5"
