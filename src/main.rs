@@ -3,6 +3,8 @@
 
 extern crate find_folder;
 extern crate serenity;
+extern crate reqwest;
+extern crate select;
 
 use serenity::model::channel::Embed;
 use serenity::model::channel::EmbedImage;
@@ -12,6 +14,8 @@ use serenity::prelude::*;
 use serenity::utils::Colour;
 use serenity::utils::MessageBuilder;
 use serenity::model::event::TypingStartEvent;
+use select::document::Document;
+use select::predicate::{Predicate, Attr, Class, Name};
 // use serenity::http::raw::broadcast_typing;
 use std::env;
 use std::fs::File;
@@ -30,7 +34,7 @@ impl EventHandler for Handler {
     //     tse.channel_id.say("type");
     // }
 
-    fn message(&self, ctx: Context, msg: Message) {
+    fn message(&self, ctx: Context, msg: Message){
         let assets = find_folder::Search::KidsThenParents(3, 5)
             .for_folder("assets")
             .unwrap();
@@ -164,6 +168,43 @@ impl EventHandler for Handler {
                 }
             }
         }
+
+        if is_command(&msg.content, "nh") {
+            let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
+            let number: i64 = message[1].parse().unwrap_or(0i64);
+            if (number == 0i64){
+                match msg.channel_id.say("Make sure the number is the 2nd item in the message is the number.") {
+                    Ok(_) => {}
+                    Err(e) => eprintln!("Error: {}", e),
+                }
+            }else{
+                let url = format!("https://nhentai.net/g/{num}/", num=&number);
+                let body = reqwest::get((&url).as_str()).unwrap().text().unwrap();
+                // println!("body = {:?}", body);
+                let document = Document::from(body.as_str());
+                let mut title : String = String::from("Not Found");
+                for node in document.find(Attr("name", "twitter:title")){
+                    title = String::from(node.attr("content").unwrap());
+                }
+                let mut tag : String = String::from("");
+                for node in document.find(Attr("name", "twitter:description")){
+                    tag = String::from(node.attr("content").unwrap());
+                }
+                let mut imurl : String = String::from("");
+                for node in document.find(Attr("itemprop", "image")){
+                    imurl = String::from(node.attr("content").unwrap());
+                }
+                match msg
+                    .channel_id
+                    .send_message(|m| m.embed(|e| e.title(&title).description(&tag).image(&imurl).url(url))) {
+                        Ok(_) => {}
+                        Err(e) => {
+                            eprintln!("Error: {}", e);
+                    }
+                }
+            }
+        }
+
 
         if is_person(&msg, "tong", 313687614853218306u64) {
             match msg.channel_id.send_files(files, |m| m.content("")) {
