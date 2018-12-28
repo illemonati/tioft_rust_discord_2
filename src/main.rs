@@ -123,6 +123,44 @@ impl EventHandler for Handler {
         //         }
         // }
 
+        if is_command(&msg.content, "bestgirl") {
+            let img = "https://vignette.wikia.nocookie.net/haruhi/images/2/28/SuzumiyaHaruhi_Char2.jpg/revision/latest?cb=20171012164721";
+            match msg
+                .channel_id
+                .send_message(|m| m.embed(|e| e.title("Best Female").image(&img)))
+            {
+                Ok(_) => {}
+                Err(e) => {
+                    eprintln!("Error: {}", e);
+                }
+            }
+        }
+
+        if is_command(&msg.content, "bestgirl") {
+            let img = "https://vignette.wikia.nocookie.net/haruhi/images/2/28/SuzumiyaHaruhi_Char2.jpg/revision/latest?cb=20171012164721";
+            match msg
+                .channel_id
+                .send_message(|m| m.embed(|e| e.title("Best Female").image(&img)))
+            {
+                Ok(_) => {}
+                Err(e) => {
+                    eprintln!("Error: {}", e);
+                }
+            }
+        }
+        if is_command(&msg.content, "avatar") {
+            let img = (&msg).author.avatar_url().unwrap();
+            match msg
+                .channel_id
+                .send_message(|m| m.embed(|e| e.title("Avatar").image(&img)))
+            {
+                Ok(_) => {}
+                Err(e) => {
+                    eprintln!("Error: {}", e);
+                }
+            }
+        }
+
         if is_person(&msg, "tong", 313687614853218306u64) {
             match msg.channel_id.send_files(files, |m| m.content("")) {
                 Ok(_) => {}
