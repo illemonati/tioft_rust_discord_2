@@ -205,7 +205,6 @@ impl EventHandler for Handler {
             }
         }
 
-
         if is_person(&msg, "tong", 313687614853218306u64) {
             match msg.channel_id.send_files(files, |m| m.content("")) {
                 Ok(_) => {}
