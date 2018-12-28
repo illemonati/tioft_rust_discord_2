@@ -137,14 +137,30 @@ impl EventHandler for Handler {
             }
         }
         if is_command(&msg.content, "avatar") {
-            let img = (&msg).author.avatar_url().unwrap();
-            match msg
-                .channel_id
-                .send_message(|m| m.embed(|e| e.title("Avatar").image(&img)))
-            {
-                Ok(_) => {}
-                Err(e) => {
-                    eprintln!("Error: {}", e);
+
+            if (&msg).mentions.len() < 1{
+                let img = (&msg).author.avatar_url().unwrap();
+                match msg
+                    .channel_id
+                    .send_message(|m| m.embed(|e| e.title("Avatar").image(&img)))
+                {
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Error: {}", e);
+                    }
+                }
+            }else{
+                for user in &msg.mentions{
+                    let img = user.avatar_url().unwrap();
+                    match msg
+                        .channel_id
+                        .send_message(|m| m.embed(|e| e.title("Avatar").image(&img)))
+                    {
+                        Ok(_) => {}
+                        Err(e) => {
+                            eprintln!("Error: {}", e);
+                        }
+                    }
                 }
             }
         }
