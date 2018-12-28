@@ -11,6 +11,7 @@ use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 use serenity::utils::Colour;
 use serenity::utils::MessageBuilder;
+use serenity::model::event::TypingStartEvent;
 // use serenity::http::raw::broadcast_typing;
 use std::env;
 use std::fs::File;
@@ -23,6 +24,12 @@ const PREFIX: &str = "@@";
 struct Handler;
 
 impl EventHandler for Handler {
+    // fn typing_start(&self, _ctx: Context, tse: TypingStartEvent){
+    //     println!("type");
+    //     tse.channel_id.broadcast_typing();
+    //     tse.channel_id.say("type");
+    // }
+
     fn message(&self, ctx: Context, msg: Message) {
         let assets = find_folder::Search::KidsThenParents(3, 5)
             .for_folder("assets")
@@ -51,7 +58,7 @@ impl EventHandler for Handler {
             return is_result;
         }
 
-        (&msg).channel_id.broadcast_typing();
+        // (&msg).channel_id.broadcast_typing();
 
         if is_command(&msg.content, "dance_char") {
             let msg_char: Vec<&str> = msg.content.trim().split_whitespace().collect();
@@ -95,26 +102,26 @@ impl EventHandler for Handler {
             }
         }
 
-        if (&msg).content.trim().to_lowercase().contains("alex") {
-            match msg.channel_id.say("He be tard. --Jon Skeet") {
-                Ok(_) => {}
-                Err(e) => {
-                    eprintln!("Error: {}", e);
-                }
-            }
-        }
+        // if (&msg).content.trim().to_lowercase().contains("alex") {
+        //     match msg.channel_id.say("He be tard. --Jon Skeet") {
+        //         Ok(_) => {}
+        //         Err(e) => {
+        //             eprintln!("Error: {}", e);
+        //         }
+        //     }
+        // }
 
-        if ((&msg).content.trim().to_lowercase().contains("homo")) || (&msg).content.trim().to_lowercase().contains("gay") {
-            let img = "https://i.imgur.com/U9UbZJI.png";
-            match msg
-                .channel_id
-                .send_message(|m| m.embed(|e| e.title("HOMO").image(&img))){
-                    Ok(_) => {}
-                    Err(e) => {
-                        eprintln!("Error: {}", e);
-                    }
-                }
-        }
+        // if ((&msg).content.trim().to_lowercase().contains("homo")) || (&msg).content.trim().to_lowercase().contains("gay") {
+        //     let img = "https://i.imgur.com/U9UbZJI.png";
+        //     match msg
+        //         .channel_id
+        //         .send_message(|m| m.embed(|e| e.title("HOMO").image(&img))){
+        //             Ok(_) => {}
+        //             Err(e) => {
+        //                 eprintln!("Error: {}", e);
+        //             }
+        //         }
+        // }
 
         if is_person(&msg, "tong", 313687614853218306u64) {
             match msg.channel_id.send_files(files, |m| m.content("")) {
