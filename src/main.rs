@@ -1,30 +1,28 @@
 #![feature(refcell_replace_swap)]
 
-
 extern crate find_folder;
-extern crate serenity;
 extern crate reqwest;
 extern crate select;
+extern crate serenity;
 
-use serenity::model::id::GuildId;
+use select::document::Document;
+use select::predicate::{Attr, Class, Name, Predicate};
 use serenity::model::channel::Embed;
 use serenity::model::channel::EmbedImage;
 use serenity::model::channel::Message;
+use serenity::model::event::TypingStartEvent;
 use serenity::model::gateway::Ready;
 use serenity::model::guild::Member;
+use serenity::model::id::GuildId;
 use serenity::model::id::UserId;
 use serenity::model::user::User;
 use serenity::prelude::*;
 use serenity::utils::Colour;
 use serenity::utils::MessageBuilder;
-use serenity::model::event::TypingStartEvent;
-use select::document::Document;
-use select::predicate::{Predicate, Attr, Class, Name};
 // use serenity::http::raw::broadcast_typing;
 use std::env;
 use std::fs::File;
 use std::time::Instant;
-
 
 use std::cell::RefCell;
 
@@ -37,16 +35,16 @@ impl EventHandler for Handler {
     //     tse.channel_id.broadcast_typing();
     //     tse.channel_id.say("type");
     // }
-    fn guild_member_addition(&self, _ctx: Context, _guild_id: GuildId, new_member: Member){
+    fn guild_member_addition(&self, _ctx: Context, _guild_id: GuildId, new_member: Member) {
         let new_user: User = new_member.user.read().id.to_user().unwrap();
         let message = format!("Hi, {name}, welcome.\n\nThis is a 𝗻𝗶𝗰𝗲 server full of _friendly_ people.\n\nRemember, you will ***Always*** be welcome here!\n\n:)", name=new_user.name);
-        match new_user.direct_message(|m| m.content(&message)){
+        match new_user.direct_message(|m| m.content(&message)) {
             Ok(_) => {}
             Err(e) => eprintln!("Error: {}", e),
         }
     }
 
-    fn message(&self, ctx: Context, msg: Message){
+    fn message(&self, ctx: Context, msg: Message) {
         let assets = find_folder::Search::KidsThenParents(3, 5)
             .for_folder("assets")
             .unwrap();
@@ -79,12 +77,17 @@ impl EventHandler for Handler {
         if is_command(&msg.content, "dance_char") {
             let msg_char: Vec<&str> = msg.content.trim().split_whitespace().collect();
             let msg_char: String = String::from(msg_char[1]).trim().to_lowercase();
-            let acceptable_chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+            let acceptable_chars = [
+                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+                "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
+                "6", "7", "8", "9",
+            ];
             let message = RefCell::new(String::from("Error"));
-            if acceptable_chars.contains(&((&msg_char).as_str())){
-                message.replace_with(|_|format!("http://dance.cavifax.com/images/{}.gif", &msg_char));
+            if acceptable_chars.contains(&((&msg_char).as_str())) {
+                message
+                    .replace_with(|_| format!("http://dance.cavifax.com/images/{}.gif", &msg_char));
             } else {
-                message.replace_with(|_|format!("The char {} is not supported !", &msg_char));
+                message.replace_with(|_| format!("The char {} is not supported !", &msg_char));
             }
             match msg.channel_id.say(message.into_inner()) {
                 Ok(_) => {}
@@ -139,7 +142,6 @@ impl EventHandler for Handler {
         //         }
         // }
 
-
         if is_command(&msg.content, "bestgirl") {
             let img = "https://vignette.wikia.nocookie.net/haruhi/images/2/28/SuzumiyaHaruhi_Char2.jpg/revision/latest?cb=20171012164721";
             match msg
@@ -153,8 +155,7 @@ impl EventHandler for Handler {
             }
         }
         if is_command(&msg.content, "avatar") {
-
-            if (&msg).mentions.len() < 1{
+            if (&msg).mentions.len() < 1 {
                 let img = (&msg).author.avatar_url().unwrap();
                 match msg
                     .channel_id
@@ -165,8 +166,8 @@ impl EventHandler for Handler {
                         eprintln!("Error: {}", e);
                     }
                 }
-            }else{
-                for user in &msg.mentions{
+            } else {
+                for user in &msg.mentions {
                     let img = user.avatar_url().unwrap();
                     match msg
                         .channel_id
@@ -183,49 +184,69 @@ impl EventHandler for Handler {
 
         if is_command(&msg.content, "nh") {
             let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
-            for num_str in message[1..].iter(){
+            for num_str in message[1..].iter() {
                 nh_p1(&msg, num_str);
             }
-
         }
 
-        fn nh_p1(msg: &Message, number_str: &str){
+        if ((&msg).author.id.as_u64()) == &313783057838768128u64{
+            // (&msg).channel_id.say("Hi");
+            if (&msg).channel_id.as_u64() == &524396339338018873u64{
+                let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
+                let is_all_nums = RefCell::new(true);
+                for num_str in message.iter() {
+                    if !num_str.parse::<i64>().is_ok(){
+                        is_all_nums.replace(false);
+                    }
+                }
+                if is_all_nums.into_inner(){
+                    for num_str in message.iter() {
+                        nh_p1(&msg, num_str);
+                    }
+                }
+            }
+        }
+
+        fn nh_p1(msg: &Message, number_str: &str) {
             let number: i64 = number_str.parse().unwrap_or(0i64);
-            if (number == 0i64){
-                match msg.channel_id.say("Make sure the the sequence in numbers only!") {
+            if (number == 0i64) {
+                match msg
+                    .channel_id
+                    .say("Make sure the the sequence in numbers only!")
+                {
                     Ok(_) => {}
                     Err(e) => eprintln!("Error: {}", e),
                 }
-            }else{
-                let url = format!("https://nhentai.net/g/{num}/", num=&number);
+            } else {
+                let url = format!("https://nhentai.net/g/{num}/", num = &number);
                 let body = reqwest::get((&url).as_str()).unwrap().text().unwrap();
                 // println!("body = {:?}", body);
                 let document = Document::from(body.as_str());
-                let mut title : String = String::from("Not Found");
-                for node in document.find(Attr("name", "twitter:title")){
+                let mut title: String = String::from("Not Found");
+                for node in document.find(Attr("name", "twitter:title")) {
                     title = String::from(node.attr("content").unwrap());
                 }
-                let mut tag : String = String::from("");
-                for node in document.find(Attr("name", "twitter:description")){
+                let mut tag: String = String::from("");
+                for node in document.find(Attr("name", "twitter:description")) {
                     tag = String::from(node.attr("content").unwrap());
                 }
-                let mut imurl : String = String::from("");
-                for node in document.find(Attr("itemprop", "image")){
+                let mut imurl: String = String::from("");
+                for node in document.find(Attr("itemprop", "image")) {
                     imurl = String::from(node.attr("content").unwrap());
                 }
-                let mut description : String = String::from("");
-                for node in document.find(Attr("id", "info")){
+                let mut description: String = String::from("");
+                for node in document.find(Attr("id", "info")) {
                     let description = node.first_child().unwrap().html();
                     println!("{:?}", description);
                 }
                 println!("{}", description);
 
-                match msg
-                    .channel_id
-                    .send_message(|m| m.embed(|e| e.title(&title).description(&tag).image(&imurl).url(url))) {
-                        Ok(_) => {}
-                        Err(e) => {
-                            eprintln!("Error: {}", e);
+                match msg.channel_id.send_message(|m| {
+                    m.embed(|e| e.title(&title).description(&tag).image(&imurl).url(url))
+                }) {
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Error: {}", e);
                     }
                 }
             }
