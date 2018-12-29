@@ -183,9 +183,16 @@ impl EventHandler for Handler {
 
         if is_command(&msg.content, "nh") {
             let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
-            let number: i64 = message[1].parse().unwrap_or(0i64);
+            for num_str in message[1..].iter(){
+                nh_p1(&msg, num_str);
+            }
+
+        }
+
+        fn nh_p1(msg: &Message, number_str: &str){
+            let number: i64 = number_str.parse().unwrap_or(0i64);
             if (number == 0i64){
-                match msg.channel_id.say("Make sure the number is the 2nd item in the message is the number.") {
+                match msg.channel_id.say("Make sure the the sequence in numbers only!") {
                     Ok(_) => {}
                     Err(e) => eprintln!("Error: {}", e),
                 }
