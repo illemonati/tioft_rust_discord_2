@@ -6,10 +6,14 @@ extern crate serenity;
 extern crate reqwest;
 extern crate select;
 
+use serenity::model::id::GuildId;
 use serenity::model::channel::Embed;
 use serenity::model::channel::EmbedImage;
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
+use serenity::model::guild::Member;
+use serenity::model::id::UserId;
+use serenity::model::user::User;
 use serenity::prelude::*;
 use serenity::utils::Colour;
 use serenity::utils::MessageBuilder;
@@ -33,6 +37,14 @@ impl EventHandler for Handler {
     //     tse.channel_id.broadcast_typing();
     //     tse.channel_id.say("type");
     // }
+    fn guild_member_addition(&self, _ctx: Context, _guild_id: GuildId, new_member: Member){
+        let new_user: User = new_member.user.read().id.to_user().unwrap();
+        let message = format!("Hi, {name}, welcome.\n\nThis is a 𝗻𝗶𝗰𝗲 server full of _friendly_ people.\n\nRemember, you will ***Always*** be welcome here!\n\n:)", name=new_user.name);
+        match new_user.direct_message(|m| m.content(&message)){
+            Ok(_) => {}
+            Err(e) => eprintln!("Error: {}", e),
+        }
+    }
 
     fn message(&self, ctx: Context, msg: Message){
         let assets = find_folder::Search::KidsThenParents(3, 5)
@@ -194,6 +206,13 @@ impl EventHandler for Handler {
                 for node in document.find(Attr("itemprop", "image")){
                     imurl = String::from(node.attr("content").unwrap());
                 }
+                let mut description : String = String::from("");
+                for node in document.find(Attr("id", "info")){
+                    let description = node.first_child().unwrap().html();
+                    println!("{:?}", description);
+                }
+                println!("{}", description);
+
                 match msg
                     .channel_id
                     .send_message(|m| m.embed(|e| e.title(&title).description(&tag).image(&imurl).url(url))) {
