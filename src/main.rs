@@ -64,6 +64,10 @@ impl EventHandler for Handler {
         // println!("{:?}\n\n\n",&msg );
         fn is_person(msg: &Message, name: &str, id: u64) -> bool {
             let mut is_result = false;
+            if msg.content.trim().len() == 0{
+                return false;
+            }
+
             if msg.content.trim().to_lowercase().contains(name) {
                 is_result = true;
             };
@@ -375,10 +379,12 @@ impl EventHandler for Handler {
                             return;
                         },
                     };
-                    let path = format!("./attachments/files/{}", &attachment.filename);
-                    fs::create_dir_all("./attachments/files/").unwrap();
-                    let path = Path::new(&path);
-                    let mut file = match File::create(path) {
+                    let file_path = format!("./attachments/files/{id}/{name}", id = &attachment.id, name = &attachment.filename);
+                    let dir_path = format!("./attachments/files/{id}", id = &attachment.id);
+                    let dir_path = Path::new(&dir_path);
+                    fs::create_dir_all(&dir_path).unwrap();
+                    let path = Path::new(&file_path);
+                    let mut file = match File::create(&file_path) {
                         Ok(file) => file,
                         Err(why) => {
                             eprintln!("Error creating file: {:?}", why);
@@ -417,6 +423,9 @@ fn main() {
 }
 
 fn is_command(message: &String, command_name: &str) -> bool {
+    if message.trim().len() == 0{
+        return false;
+    }
     // message.trim() == String::from(PREFIX) + command_name
     let message: Vec<&str> = message.trim().split_whitespace().collect();
     // match ([&message[0], message[1]].join(" ") == String::from(PREFIX) + command_name){
