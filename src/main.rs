@@ -13,6 +13,7 @@ use serenity::model::channel::Message;
 use serenity::model::event::TypingStartEvent;
 use serenity::model::gateway::Ready;
 use serenity::model::guild::Member;
+use serenity::model::id::ChannelId;
 use serenity::model::id::GuildId;
 use serenity::model::id::UserId;
 use serenity::model::user::User;
@@ -339,6 +340,12 @@ impl EventHandler for Handler {
             }
         }
 
+        if is_command(&msg.content, "get_log"){
+            if msg.author.id.as_u64() == &313687614853218306u64{
+                send_log(&msg.channel_id);
+            }
+        }
+
         fn print_msg(msg: &Message) {
             println!("-------------------------------------------------------------------------");
             println!("id: {}\n", (&msg).id);
@@ -363,6 +370,15 @@ impl EventHandler for Handler {
             println!("timestamp: {}\n", (&msg).timestamp);
             println!("-------------------------------------------------------------------------");
             print!("\n\n\n");
+        }
+
+        fn send_log(channel_id: &ChannelId) {
+            let log_path = env::var("DISCORD_LOG").expect("Expected DISCORD_LOG to be set in the environment");
+            let log_path = log_path.as_str();
+            // let log_path = Path::new(&log_path);
+            // let log_file = File::open(&log_path).expect("Log file not found");
+            let log_files = vec![log_path];
+            let _ = channel_id.send_files(log_files, |m| m.content("Log file"));
         }
 
         fn download_attactments(msg: &Message){
