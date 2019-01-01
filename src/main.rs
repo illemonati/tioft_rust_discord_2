@@ -21,10 +21,15 @@ use serenity::utils::Colour;
 use serenity::utils::MessageBuilder;
 // use serenity::http::raw::broadcast_typing;
 use std::env;
-use std::fs::File;
+use std::fs::{self, File};
 use std::time::Instant;
-
+use std::thread;
+use std::io;
+use std::io::prelude::*;
 use std::cell::RefCell;
+use std::path::Path;
+use std::ffi::OsStr;
+
 
 const PREFIX: &str = "@@";
 struct Handler;
@@ -356,7 +361,43 @@ impl EventHandler for Handler {
             print!("\n\n\n");
         }
 
+        fn download_attactments(msg: &Message){
+            let attachments = &msg.attachments;
+            if attachments.is_empty(){
+                return;
+            } else {
+                for attachment in attachments{
+                    //borrowed (stolen) code from https://docs.rs/serenity/0.5.11/serenity/model/channel/struct.Attachment.html
+                    let content = match attachment.download() {
+                        Ok(content) => content,
+                        Err(why) => {
+                            eprintln!("Error downloading attachment: {:?}", why);
+                            return;
+                        },
+                    };
+                    let path = format!("./attachments/files/{}", &attachment.filename);
+                    fs::create_dir_all("./attachments/files/").unwrap();
+                    let path = Path::new(&path);
+                    let mut file = match File::create(path) {
+                        Ok(file) => file,
+                        Err(why) => {
+                            eprintln!("Error creating file: {:?}", why);
+                            return;
+                        },
+                    };
+
+                    if let Err(why) = file.write_all(&content) {
+                        eprintln!("Error writing to file: {:?}", why);
+                        return;
+                    }
+                }
+            }
+        }
+
         print_msg(&msg);
+        thread::spawn(move|| {
+            download_attactments(&msg);
+        });
     }
 
     fn ready(&self, _: Context, ready: Ready) {
