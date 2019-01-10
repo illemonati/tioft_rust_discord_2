@@ -4,7 +4,11 @@ extern crate find_folder;
 extern crate reqwest;
 extern crate select;
 extern crate serenity;
+extern crate qrcode_generator;
+extern crate barcoders;
 
+use barcoders::sym::code39::*;
+use barcoders::generators::image::*;
 use select::document::Document;
 use select::predicate::{Attr, Class, Name, Predicate};
 use serenity::model::channel::Embed;
@@ -26,10 +30,13 @@ use std::fs::{self, File};
 use std::time::Instant;
 use std::thread;
 use std::io;
+use std::io::BufWriter;
 use std::io::prelude::*;
 use std::cell::RefCell;
 use std::path::Path;
 use std::ffi::OsStr;
+use qrcode_generator::QrCodeEcc;
+
 
 
 const PREFIX: &str = "@@";
@@ -83,7 +90,6 @@ impl EventHandler for Handler {
         }
 
         // (&msg).channel_id.broadcast_typing();
-
         if is_command(&msg.content, "dance_char") {
             let msg_char: Vec<&str> = msg.content.trim().split_whitespace().collect();
             let msg_char: String = String::from(msg_char[1]).trim().to_lowercase();
@@ -129,6 +135,30 @@ impl EventHandler for Handler {
                     eprintln!("Error: {}", e);
                 }
             }
+        }
+
+        if is_command(&msg.content, "get_qr") {
+            let thing:Vec<&str> = msg.content.trim().split_whitespace().collect();
+            let qr = qrcode_generator::to_png_to_file(thing.get(1).unwrap_or(&""), QrCodeEcc::Medium,1024, "assets/images/qr.png").unwrap();
+            let qr = vec!["assets/images/qr.png"];
+            let _ = &msg.channel_id.send_files(qr, |m| m.content(""));
+        }
+
+        if is_command(&msg.content, "get_bar") {
+            let thing:Vec<&str> = msg.content.trim().split_whitespace().collect();
+            let barcode = Code39::new(thing.get(1).unwrap_or(&"mega oof").to_uppercase()).unwrap();
+            let png = Image::png(80); // You must specify the height in pixels.
+            let encoded = barcode.encode();
+
+            // Image generators return a Result<Vec<u8>, barcoders::error::Error) of encoded bytes.
+            let bytes = png.generate(&encoded[..]).unwrap();
+
+            // Which you can then save to disk.
+            let file = File::create(&Path::new("assets/images/bar.png")).unwrap();
+            let mut writer = BufWriter::new(file);
+            writer.write(&bytes[..]).unwrap();
+            let bar = vec!["assets/images/bar.png"];
+            let _ = &msg.channel_id.send_files(bar, |m| m.content(""));
         }
 
         // if (&msg).content.trim().to_lowercase().contains("alex") {
