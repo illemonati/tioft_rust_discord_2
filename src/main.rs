@@ -6,6 +6,7 @@ extern crate select;
 extern crate serenity;
 extern crate qrcode_generator;
 extern crate barcoders;
+extern crate regex;
 
 use barcoders::sym::code39::*;
 use barcoders::generators::image::*;
@@ -37,7 +38,7 @@ use std::path::Path;
 use std::ffi::OsStr;
 use qrcode_generator::QrCodeEcc;
 
-
+mod scp;
 
 const PREFIX: &str = "@@";
 struct Handler;
@@ -229,6 +230,40 @@ impl EventHandler for Handler {
             }
         }
 
+        if is_command(&msg.content, "scp") {
+            let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
+            for num_str in message[1..].iter() {
+                scp_p1(&msg, num_str);
+            }
+        }
+
+       fn scp_p1(msg: &Message, number_str: &str) {
+            let number: i64 = number_str.parse().unwrap_or(0i64);
+            if (number == 0i64) {
+                match msg
+                    .channel_id
+                    .say("Make sure the the sequence in numbers only!")
+                {
+                    Ok(_) => {}
+                    Err(e) => eprintln!("Error: {}", e),
+                }
+            } else {
+                let s = scp::SCP::new(number);
+                let title = format!("{} ({})", (&s).item_n, (&s).object_class );
+                let description = (&s).get_description_short();
+                let url = &(&s).url;
+                let procedure = (&s).get_procedure_short();
+                match msg.channel_id.send_message(|m| {
+                    m.embed(|e| e.title(&title).description(&description).url(url).field("scp: ", procedure, true))
+                }) {
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Error: {}", e);
+                    }
+                }
+            }
+        }
+
         if is_command(&msg.content, "nhr"){
             let url = format!("https://nhentai.net/random/");
             let body = reqwest::get((&url).as_str()).unwrap().text().unwrap();
@@ -251,7 +286,6 @@ impl EventHandler for Handler {
                 let description = node.first_child().unwrap().html();
                 println!("{:?}", description);
             }
-            println!("{}", description);
 
             match msg.channel_id.send_message(|m| {
                 m.embed(|e| e.title(&title).description(&tag).image(&imurl).url(url))
@@ -313,7 +347,7 @@ impl EventHandler for Handler {
                     let description = node.first_child().unwrap().html();
                     println!("{:?}", description);
                 }
-                println!("{}", description);
+
 
                 match msg.channel_id.send_message(|m| {
                     m.embed(|e| e.title(&title).description(&tag).image(&imurl).url(url))
@@ -458,6 +492,7 @@ impl EventHandler for Handler {
 }
 
 fn main() {
+
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     // let token = "123";
     let now = Instant::now();

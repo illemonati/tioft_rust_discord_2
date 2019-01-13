@@ -10,6 +10,7 @@ reqwest = "0.9.5"
 select = "0.4.2"
 qrcode-generator = "1.0.3"
 barcoders = {git="https://github.com/buntine/barcoders.git", features = ["image"]}
+regex = "1.1.0"
 
 [dependencies.serenity]
 git = "https://github.com/illemonati/serenity"
