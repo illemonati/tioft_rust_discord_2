@@ -254,7 +254,7 @@ impl EventHandler for Handler {
                 let url = &(&s).url;
                 let procedure = (&s).get_procedure_short();
                 match msg.channel_id.send_message(|m| {
-                    m.embed(|e| e.title(&title).description(&description).url(url).field("scp: ", procedure, true))
+                    m.embed(|e| e.title(&title).description(&description).url(url).footer(|f| f.text(procedure)))
                 }) {
                     Ok(_) => {}
                     Err(e) => {
