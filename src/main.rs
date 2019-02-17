@@ -198,6 +198,7 @@ impl EventHandler for Handler {
         if is_command(&msg.content, "avatar") {
             if (&msg).mentions.len() < 1 {
                 let img = (&msg).author.avatar_url().unwrap();
+                let img = img.replace("webp", "png");
                 match msg
                     .channel_id
                     .send_message(|m| m.embed(|e| e.title("Avatar").image(&img)))
@@ -210,6 +211,7 @@ impl EventHandler for Handler {
             } else {
                 for user in &msg.mentions {
                     let img = user.avatar_url().unwrap();
+                    let img = img.replace("webp", "png");
                     match msg
                         .channel_id
                         .send_message(|m| m.embed(|e| e.title("Avatar").image(&img)))
