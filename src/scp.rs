@@ -14,7 +14,7 @@ pub struct SCP {
 impl SCP {
     pub fn new(n: i64) -> SCP {
         let number: &str;
-        if (&n < 100) && &n > 9 {
+        if (&n < &100i64) && &n > &9i64 {
             number = &format!("0{}", &n);
         }else{
             number = &format!("{}", &n);
