@@ -299,7 +299,7 @@ impl EventHandler for Handler {
             }
         }
 
-        if ((&msg).author.id.as_u64()) == &313783057838768128u64{
+//        if ((&msg).author.id.as_u64()) == &313783057838768128u64{
             // (&msg).channel_id.say("Hi");
             if (&msg).channel_id.as_u64() == &524396339338018873u64{
                 let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
@@ -315,7 +315,7 @@ impl EventHandler for Handler {
                     }
                 }
             }
-        }
+//        }
 
         fn nh_p1(msg: &Message, number_str: &str) {
             let number: i64 = number_str.parse().unwrap_or(0i64);
