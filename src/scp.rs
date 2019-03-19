@@ -13,11 +13,11 @@ pub struct SCP {
 
 impl SCP {
     pub fn new(n: i64) -> SCP {
-        let number: &str;
+        let number: String;
         if (&n < &100i64) && &n > &9i64 {
-            number = &format!("0{}", &n);
+            number = format!("0{}", &n);
         }else{
-            number = &format!("{}", &n);
+            number = format!("{}", &n);
         }
         let mut scp_object = SCP{
             url: format!("http://www.scp-wiki.net/scp-{}", &n),
