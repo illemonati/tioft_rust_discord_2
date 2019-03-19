@@ -13,9 +13,15 @@ pub struct SCP {
 
 impl SCP {
     pub fn new(n: i64) -> SCP {
+        let number: &str;
+        if (&n < 100) && &n > 9 {
+            number = &format!("0{}", &n);
+        }else{
+            number = &format!("{}", &n);
+        }
         let mut scp_object = SCP{
             url: format!("http://www.scp-wiki.net/scp-{}", &n),
-            item_n: format!("SCP-{}", &n),
+            item_n: format!("SCP-{}", number),
             object_class: String::new(),
             description: String::new(),
             procedure: String::new(),
