@@ -20,7 +20,7 @@ impl SCP {
             number = format!("{}", &n);
         }
         let mut scp_object = SCP{
-            url: format!("http://www.scp-wiki.net/scp-{}", &n),
+            url: format!("http://www.scp-wiki.net/scp-{}", number),
             item_n: format!("SCP-{}", number),
             object_class: String::new(),
             description: String::new(),
