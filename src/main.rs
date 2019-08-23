@@ -232,6 +232,12 @@ impl EventHandler for Handler {
             }
         }
 
+        if is_command(&msg.content, "nhq") {
+            let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
+            let message: String = message[1..].iter().map(|s| s.to_string()+"+").collect();
+            nhq(&msg, message)
+        }
+
         if is_command(&msg.content, "scp") {
             let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
             for num_str in message[1..].iter() {
@@ -322,6 +328,22 @@ impl EventHandler for Handler {
                 }
             }
 //        }
+
+        fn nhq(msg: &Message, wordstr: String) {
+            let body = reqwest::get(&format!("https://nhentai.net/search/?q={}&sort=popular", wordstr)).unwrap().text().unwrap();
+            let re: regex::Regex = regex::Regex::new(r"g/(\d+)").unwrap();
+            let captures = re.captures_iter(body.as_str());
+            let captures: Vec<regex::Captures> = captures.collect();
+            if captures.len() > 5 {
+                for num_str in captures[1..5].iter() {
+                    nh_p1(&msg, &num_str[1]);
+                }
+            }else {
+                for num_str in captures[1..].iter() {
+                    nh_p1(&msg, &num_str[1]);
+                }
+            }
+        }
 
         fn nhq(msg: &Message, wordstr: String) {
             let body = reqwest::get(&format!("https://nhentai.net/search/?q={}&sort=popular", wordstr)).unwrap().text().unwrap();
