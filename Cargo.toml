@@ -28,3 +28,6 @@ features = [
     # "voice",
 ]
 version = "0.5"
+
+[profile.release]
+opt-level = 3
