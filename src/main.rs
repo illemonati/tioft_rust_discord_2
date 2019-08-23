@@ -333,7 +333,7 @@ impl EventHandler for Handler {
             match msg.channel_id.say("<@386503881854550016> You are quite \"special\"...") {
                 Ok(_) => {},
                 Err(e) => {
-                    eprintln!("Error: {}", e));
+                    eprintln!("Error: {}", e);
                 }
             }
         }
