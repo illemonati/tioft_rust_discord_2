@@ -272,6 +272,12 @@ impl EventHandler for Handler {
             }
         }
 
+        if is_command(&msg.content, "nhq") {
+            let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
+            let message: String = message[1..].iter().map(|s| s.to_string()+"+").collect();
+            nhq(&msg, message)
+        }
+
         if is_command(&msg.content, "nhr"){
             let url = format!("https://nhentai.net/random/");
             let body = reqwest::get((&url).as_str()).unwrap().text().unwrap();
@@ -305,7 +311,7 @@ impl EventHandler for Handler {
             }
         }
 
-        if ((&msg).author.id.as_u64()) == &313783057838768128u64{
+//        if ((&msg).author.id.as_u64()) == &313783057838768128u64{
             // (&msg).channel_id.say("Hi");
             if (&msg).channel_id.as_u64() == &524396339338018873u64{
                 let message: Vec<&str> = msg.content.trim().split_whitespace().collect();
@@ -319,6 +325,22 @@ impl EventHandler for Handler {
                     for num_str in message.iter() {
                         nh_p1(&msg, num_str);
                     }
+                }
+            }
+//        }
+
+        fn nhq(msg: &Message, wordstr: String) {
+            let body = reqwest::get(&format!("https://nhentai.net/search/?q={}&sort=popular", wordstr)).unwrap().text().unwrap();
+            let re: regex::Regex = regex::Regex::new(r"g/(\d+)").unwrap();
+            let captures = re.captures_iter(body.as_str());
+            let captures: Vec<regex::Captures> = captures.collect();
+            if captures.len() > 5 {
+                for num_str in captures[1..5].iter() {
+                    nh_p1(&msg, &num_str[1]);
+                }
+            }else {
+                for num_str in captures[1..].iter() {
+                    nh_p1(&msg, &num_str[1]);
                 }
             }
         }
