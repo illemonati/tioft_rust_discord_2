@@ -329,14 +329,14 @@ impl EventHandler for Handler {
             }
 //        }
 
-        if ((&msg).author.id.as_u64()) == &319533843482673152u64 {
-            match msg.channel_id.say("<@386503881854550016> You are quite \"special\"...") {
-                Ok(_) => {},
-                Err(e) => {
-                    eprintln!("Error: {}", e);
-                }
-            }
-        }
+        //if ((&msg).author.id.as_u64()) == &319533843482673152u64 {
+         //   match msg.channel_id.say("<@386503881854550016> You are quite \"special\"...") {
+         //       Ok(_) => {},
+         //       Err(e) => {
+         //           eprintln!("Error: {}", e);
+         //       }
+         //   }
+        //}
 
 
         fn nhq(msg: &Message, wordstr: String) {
