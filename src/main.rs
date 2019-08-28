@@ -28,6 +28,7 @@ use serenity::utils::MessageBuilder;
 // use serenity::http::raw::broadcast_typing;
 use std::env;
 use std::fs::{self, File};
+use std::time::Duration;
 use std::time::Instant;
 use std::thread;
 use std::io;
@@ -49,6 +50,7 @@ impl EventHandler for Handler {
     //     tse.channel_id.broadcast_typing();
     //     tse.channel_id.say("type");
     // }
+
     fn guild_member_addition(&self, _ctx: Context, _guild_id: GuildId, new_member: Member) {
         let new_user: User = new_member.user.read().id.to_user().unwrap();
         let message = format!("Hi, {name}, welcome.\n\nThis is a 𝗻𝗶𝗰𝗲 server full of _friendly_ people.\n\nRemember, you will ***Always*** be welcome here!\n\n:)", name=new_user.name);
@@ -137,6 +139,7 @@ impl EventHandler for Handler {
                 }
             }
         }
+
 
         if is_command(&msg.content, "get_qr") {
             let thing:Vec<&str> = msg.content.trim().split_whitespace().collect();
@@ -444,6 +447,29 @@ impl EventHandler for Handler {
             }
         }
 
+        if is_command(&msg.content, "userphonememe"){
+            let msg_c = msg.clone();
+            thread::spawn(move || {
+                for i in 0..100 {
+                    let speakerphone = "--userphone";
+                    let attack_text = "あなたはそれをバカにした！ サンダークロススプリット攻撃";
+                    let attack_image = "https://cdn.discordapp.com/attachments/451511828489437194/616407409438490637/image0-35.jpg";
+                    send_msg(&msg_c, &speakerphone.to_string());
+                    (&msg_c).channel_id.broadcast_typing();
+                    (&msg_c).channel_id.broadcast_typing();
+                    (&msg_c).channel_id.broadcast_typing();
+                    thread::sleep(Duration::from_secs(20));
+                    (&msg_c).channel_id.broadcast_typing();
+                    send_msg(&msg_c, &attack_text.to_string());
+                    thread::sleep_ms(100);
+                    send_msg(&msg_c, &attack_image.to_string());
+                    thread::sleep_ms(100);
+                    send_msg(&msg_c, &speakerphone.to_string());
+                    thread::sleep(Duration::from_secs(30));
+                }
+            });
+        }
+
         if is_command(&msg.content, "get_log"){
             if msg.author.id.as_u64() == &313687614853218306u64{
                 send_log(&msg.channel_id);
@@ -551,4 +577,11 @@ fn is_command(message: &String, command_name: &str) -> bool {
     let message: Vec<&str> = message.trim().split_whitespace().collect();
     // match ([&message[0], message[1]].join(" ") == String::from(PREFIX) + command_name){
     (message[0] == String::from(PREFIX) + command_name)
+}
+
+fn send_msg(og_msg: &Message, message: &String) {
+    match og_msg.channel_id.say(message) {
+        Ok(_) => {}
+        Err(e) => eprintln!("Error: {}", e),
+    }
 }
